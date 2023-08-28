@@ -1,11 +1,25 @@
 pluginManagement {
+//	repositories {
+//		mavenCentral()
+//		gradlePluginPortal()
+//		if (version.endsWith('-SNAPSHOT')) {
+//			maven { url "https://repo.spring.io/snapshot" }
+//		}
+//	}
 	repositories {
+		//阿里云镜像
+		maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+		maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
 		mavenCentral()
 		gradlePluginPortal()
+		maven {
+			url 'https://repo.spring.io/release'
+		}
 		if (version.endsWith('-SNAPSHOT')) {
 			maven { url "https://repo.spring.io/snapshot" }
 		}
 	}
+
 	resolutionStrategy {
 		eachPlugin {
 			if (requested.id.id == "org.jetbrains.kotlin.jvm") {
@@ -20,7 +34,7 @@ pluginManagement {
 
 plugins {
 	id "com.gradle.enterprise" version "3.12.5"
-	id "io.spring.ge.conventions" version "0.0.13"
+//	id "io.spring.ge.conventions" version "0.0.13"
 }
 
 rootProject.name="spring-boot-build"
@@ -68,6 +82,9 @@ include "spring-boot-project:spring-boot-docs"
 include "spring-boot-project:spring-boot-properties-migrator"
 include "spring-boot-project:spring-boot-test"
 include "spring-boot-project:spring-boot-test-autoconfigure"
+
+//include "spring-boot-project:springBootDemo"
+
 include "spring-boot-tests:spring-boot-integration-tests:spring-boot-configuration-processor-tests"
 include "spring-boot-tests:spring-boot-integration-tests:spring-boot-launch-script-tests"
 include "spring-boot-tests:spring-boot-integration-tests:spring-boot-loader-tests"
@@ -82,3 +99,7 @@ file("${rootDir}/spring-boot-project/spring-boot-starters").eachDirMatch(~/sprin
 file("${rootDir}/spring-boot-tests/spring-boot-smoke-tests").eachDirMatch(~/spring-boot-smoke-test.*/) {
 	include "spring-boot-tests:spring-boot-smoke-tests:${it.name}"
 }
+
+//include "spring-boot-project:springBootDemo"
+//findProject(":spring-boot-project:springBootDemo")?.name = 'springBootDemo'
+
