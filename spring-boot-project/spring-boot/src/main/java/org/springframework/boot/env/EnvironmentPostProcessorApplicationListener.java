@@ -19,6 +19,8 @@ package org.springframework.boot.env;
 import java.util.List;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
@@ -45,6 +47,8 @@ public class EnvironmentPostProcessorApplicationListener implements SmartApplica
 	 */
 	public static final int DEFAULT_ORDER = Ordered.HIGHEST_PRECEDENCE + 10;
 
+	private static final Logger immediateLogger = LoggerFactory.getLogger(EnvironmentPostProcessorApplicationListener.class);
+
 	private final DeferredLogs deferredLogs;
 
 	private int order = DEFAULT_ORDER;
@@ -62,6 +66,7 @@ public class EnvironmentPostProcessorApplicationListener implements SmartApplica
 	/**
 	 * Create a new {@link EnvironmentPostProcessorApplicationListener} with post
 	 * processors created by the given factory.
+	 *
 	 * @param postProcessorsFactory the post processors factory
 	 */
 	public EnvironmentPostProcessorApplicationListener(EnvironmentPostProcessorsFactory postProcessorsFactory) {
@@ -97,8 +102,10 @@ public class EnvironmentPostProcessorApplicationListener implements SmartApplica
 	private void onApplicationEnvironmentPreparedEvent(ApplicationEnvironmentPreparedEvent event) {
 		ConfigurableEnvironment environment = event.getEnvironment();
 		SpringApplication application = event.getSpringApplication();
+		immediateLogger.info("environmentPostProcessors begin postProcessEnvironment...");
 		for (EnvironmentPostProcessor postProcessor : getEnvironmentPostProcessors(application.getResourceLoader(),
 				event.getBootstrapContext())) {
+			immediateLogger.info("environmentPostProcessor {} begin postProcessEnvironment.", postProcessor.getClass());
 			postProcessor.postProcessEnvironment(environment, application);
 		}
 	}
@@ -116,7 +123,7 @@ public class EnvironmentPostProcessorApplicationListener implements SmartApplica
 	}
 
 	List<EnvironmentPostProcessor> getEnvironmentPostProcessors(ResourceLoader resourceLoader,
-			ConfigurableBootstrapContext bootstrapContext) {
+																ConfigurableBootstrapContext bootstrapContext) {
 		ClassLoader classLoader = (resourceLoader != null) ? resourceLoader.getClassLoader() : null;
 		EnvironmentPostProcessorsFactory postProcessorsFactory = this.postProcessorsFactory.apply(classLoader);
 		return postProcessorsFactory.getEnvironmentPostProcessors(this.deferredLogs, bootstrapContext);
