@@ -15,19 +15,19 @@ public class MySimpleApplicationEventMulticaster extends SimpleApplicationEventM
 
 	@Override
 	public void multicastEvent(ApplicationEvent event) {
-//		logger.info("multicastEvent {} ", event.getClass());
+//		logger.info("hgbLog : multicastEvent {} ", event.getClass());
 		super.multicastEvent(event);
 	}
 
 	@Override
 	public void multicastEvent(ApplicationEvent event, ResolvableType eventType) {
-		logger.info("multicastEvent is {}, eventType is {} ", event.getClass(), (eventType != null ? eventType.getClass() : "null"));
+		logger.info("hgbLog : multicastEvent is {}, eventType is {} ", event.getClass(), (eventType != null ? eventType.getClass() : "null"));
 		// super.multicastEvent(event, eventType);
 
 		ResolvableType type = (eventType != null ? eventType : resolveDefaultEventType(event));
 		Executor executor = getTaskExecutor();
 		for (ApplicationListener<?> listener : super.getApplicationListeners(event, type)) {
-			logger.info("invoke listener {} for event {}", listener.getClass(), event.getClass());
+			logger.info("hgbLog  : invoke listener {} for event {}", listener.getClass(), event.getClass());
 			if (executor != null) {
 				executor.execute(() -> invokeListener(listener, event));
 			} else {

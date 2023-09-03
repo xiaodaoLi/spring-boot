@@ -30,9 +30,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import liquibase.pro.packaged.E;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.CachedIntrospectionResults;
@@ -176,6 +179,7 @@ public class SpringApplication {
 	private static final String SYSTEM_PROPERTY_JAVA_AWT_HEADLESS = "java.awt.headless";
 
 	private static final Log logger = LogFactory.getLog(SpringApplication.class);
+	private static final Logger slf4jLogger = LoggerFactory.getLogger(SpringApplication.class);
 
 	static final SpringApplicationShutdownHook shutdownHook = new SpringApplicationShutdownHook();
 
@@ -260,6 +264,7 @@ public class SpringApplication {
 		this.resourceLoader = resourceLoader;
 		Assert.notNull(primarySources, "PrimarySources must not be null");
 		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources));
+		// new SpringApplication 对象的时候就推断了WEB类型
 		this.webApplicationType = WebApplicationType.deduceFromClasspath();
 		this.bootstrapRegistryInitializers = new ArrayList<>(
 				getSpringFactoriesInstances(BootstrapRegistryInitializer.class));
@@ -302,11 +307,23 @@ public class SpringApplication {
 			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);
 			configureIgnoreBeanInfo(environment);
 			Banner printedBanner = printBanner(environment);
+			//使用策略模式，根据 webApplicationType 创建 ConfigurableApplicationContext （ApplicationContext）
+			/*根据用户是否明确设置了applicationContextClass类型以及初始化阶段的推断结果，决定该为当前SpringBoot应用创建什么类型的ApplicationContext并创建完成
+			 * ，然后根据条件决定是否添加ShutdownHook，决定是否使用自定义的BeanNameGenerator，决定是否使用自定义的ResourceLoader，
+			 * 当然，最重要的，将之前准备好的Environment设置给创建好的ApplicationContext使用。*/
 			context = createApplicationContext();
+
 			context.setApplicationStartup(this.applicationStartup);
+
+			// 读取配置文件，准备环境信息, 加载自动配置。核心
 			prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);
+
+			// 核心
 			refreshContext(context);
+
+			// 空的方法，protect范围
 			afterRefresh(context, applicationArguments);
+
 			Duration timeTakenToStartup = Duration.ofNanos(System.nanoTime() - startTime);
 			if (this.logStartupInfo) {
 				new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), timeTakenToStartup);
@@ -338,9 +355,11 @@ public class SpringApplication {
 	private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners listeners,
 			DefaultBootstrapContext bootstrapContext, ApplicationArguments applicationArguments) {
 		// Create and configure the environment
+		// 创建并配置将要使用的environment （包括配置要使用的PropertySource以及Profile）。
 		ConfigurableEnvironment environment = getOrCreateEnvironment();
 		configureEnvironment(environment, applicationArguments.getSourceArgs());
 		ConfigurationPropertySources.attach(environment);
+		// 告诉所有的SpringApplicationRunListener ,环境已准备好
 		listeners.environmentPrepared(bootstrapContext, environment);
 		DefaultPropertiesPropertySource.moveToEnd(environment);
 		Assert.state(!environment.containsProperty("spring.main.environment-prefix"),
@@ -370,8 +389,13 @@ public class SpringApplication {
 			ConfigurableEnvironment environment, SpringApplicationRunListeners listeners,
 			ApplicationArguments applicationArguments, Banner printedBanner) {
 		context.setEnvironment(environment);
+
 		postProcessApplicationContext(context);
+
+		// 在ApplicationContext refresh 之前遍历调用各个初始化器 ApplicationContextInitializer
 		applyInitializers(context);
+
+		//遍历调用 SpringApplicationRunListener 的方法 contextPrepared
 		// 发布事件 ApplicationContextInitializedEvent
 		listeners.contextPrepared(context);
 		bootstrapContext.close(context);
@@ -379,6 +403,9 @@ public class SpringApplication {
 			logStartupInfo(context.getParent() == null);
 			logStartupProfileInfo(context);
 		}
+		/*******************************************/
+
+		//最核心的一步，将之前通过 @EnableAutoConfiguration 获取的所有配置以及其他形式的IoC容器配置加载到已经准备完毕的ApplicationContext。
 		// Add boot specific singleton beans
 		ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
 		beanFactory.registerSingleton("springApplicationArguments", applicationArguments);
@@ -400,6 +427,10 @@ public class SpringApplication {
 		Set<Object> sources = getAllSources();
 		Assert.notEmpty(sources, "Sources must not be empty");
 		load(context, sources.toArray(new Object[0]));
+
+		/*******************************************/
+
+		// 遍历调用 SpringApplicationRunListener 的方法 contextLoaded
 		// stepName: spring.boot.application.context-loaded
 		// 加载配置文件等
 		//发布事件ApplicationPreparedEvent
@@ -733,6 +764,9 @@ public class SpringApplication {
 	 * @param applicationContext the application context to refresh
 	 */
 	protected void refresh(ConfigurableApplicationContext applicationContext) {
+		// ReactiveWebServerApplicationContext 或者 ServletWebServerApplicationContext
+		// 但实际上调用的是抽象类 AbstractApplicationContext 的 refresh 方法
+		slf4jLogger.info("hgbLog : begin to refresh ApplicationContext, context type is {}", applicationContext.getClass());
 		applicationContext.refresh();
 	}
 

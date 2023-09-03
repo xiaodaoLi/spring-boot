@@ -102,10 +102,10 @@ public class EnvironmentPostProcessorApplicationListener implements SmartApplica
 	private void onApplicationEnvironmentPreparedEvent(ApplicationEnvironmentPreparedEvent event) {
 		ConfigurableEnvironment environment = event.getEnvironment();
 		SpringApplication application = event.getSpringApplication();
-		immediateLogger.info("environmentPostProcessors begin postProcessEnvironment...");
+		immediateLogger.info("hgbLog : environmentPostProcessors begin postProcessEnvironment...");
 		for (EnvironmentPostProcessor postProcessor : getEnvironmentPostProcessors(application.getResourceLoader(),
 				event.getBootstrapContext())) {
-			immediateLogger.info("environmentPostProcessor {} begin postProcessEnvironment.", postProcessor.getClass());
+			immediateLogger.info("hgbLog : environmentPostProcessor {} begin postProcessEnvironment.", postProcessor.getClass());
 			postProcessor.postProcessEnvironment(environment, application);
 		}
 	}

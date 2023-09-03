@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.config.LocationResourceLoader.ResourceType;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.env.PropertySourceLoader;
@@ -70,6 +72,9 @@ public class StandardConfigDataLocationResolver
 	private static final String NO_PROFILE = null;
 
 	private final Log logger;
+
+	private static final Logger immediateLoggger = LoggerFactory.getLogger(ConfigDataEnvironmentContributors.class);
+
 
 	private final List<PropertySourceLoader> propertySourceLoaders;
 
@@ -321,6 +326,7 @@ public class StandardConfigDataLocationResolver
 	}
 
 	private void logSkippingResource(StandardConfigDataReference reference) {
+		immediateLoggger.info("hgbLog : Skipping missing resource {}", reference);
 		this.logger.trace(LogMessage.format("Skipping missing resource %s", reference));
 	}
 

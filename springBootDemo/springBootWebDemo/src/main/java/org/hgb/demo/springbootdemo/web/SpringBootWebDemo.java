@@ -12,8 +12,8 @@ import org.springframework.context.annotation.ComponentScans;
 public class SpringBootWebDemo {
 	private static Logger logger = LoggerFactory.getLogger(SpringBootWebDemo.class);
 	public static void main(String[] args) {
-		logger.info("begin to start my springBoot web demo");
+		logger.info("hgbLog : begin to start my springBoot web demo");
 		SpringApplication.run(SpringBootWebDemo.class, args);
-		logger.info("success start my springBoot web demo");
+		logger.info("hgbLog : success start my springBoot web demo");
 	}
 }
