@@ -313,6 +313,9 @@ public class SpringApplication {
 			 * 当然，最重要的，将之前准备好的Environment设置给创建好的ApplicationContext使用。*/
 			context = createApplicationContext();
 
+			// context is class org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext
+			slf4jLogger.info("context is {}",context.getClass());
+
 			context.setApplicationStartup(this.applicationStartup);
 
 			// 读取配置文件，准备环境信息, 加载自动配置。核心

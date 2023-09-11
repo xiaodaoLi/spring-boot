@@ -83,7 +83,43 @@ include "spring-boot-project:spring-boot-properties-migrator"
 include "spring-boot-project:spring-boot-test"
 include "spring-boot-project:spring-boot-test-autoconfigure"
 
-include "springBootDemo:springBootWebDemo"
+//include "springBootDemo:springBootWebDemo_dependency"
+//include "springBootDemo:springBootWebDemo"
+
+include "springBootDemo:springBootWebDemo_dependency"
+include "springBootDemo:springBootWebDemo_boot"
+
+//include "springBootDemo:springBootWebDemo"
+
+//include ':spring-framework'
+////project(':spring-framework').projectDir = new File(settingsDir, '../../spring-framework')
+////
+//project(':spring-framework').projectDir = file('../spring-framework')
+
+//include "spring-framework:spring-aop"
+//include "spring-framework:spring-aspects"
+//include "spring-framework:spring-beans"
+//include "spring-framework:spring-context"
+//include "spring-framework:spring-context-indexer"
+//include "spring-framework:spring-context-support"
+//include "spring-framework:spring-core"
+//include "spring-framework:spring-expression"
+//include "spring-framework:spring-instrument"
+//include "spring-framework:spring-jcl"
+//include "spring-framework:spring-jdbc"
+//include "spring-framework:spring-jms"
+//include "spring-framework:spring-messaging"
+//include "spring-framework:spring-orm"
+//include "spring-framework:spring-oxm"
+//include "spring-framework:spring-r2dbc"
+//include "spring-framework:spring-test"
+//include "spring-framework:spring-tx"
+//include "spring-framework:spring-web"
+//include "spring-framework:spring-webflux"
+//include "spring-framework:spring-webmvc"
+//include "spring-framework:spring-websocket"
+//include "spring-framework:framework-bom"
+//include "spring-framework:integration-tests"
 
 include "spring-boot-tests:spring-boot-integration-tests:spring-boot-configuration-processor-tests"
 include "spring-boot-tests:spring-boot-integration-tests:spring-boot-launch-script-tests"

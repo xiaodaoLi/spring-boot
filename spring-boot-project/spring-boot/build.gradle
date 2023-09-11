@@ -106,6 +106,7 @@ dependencies {
 	optional("org.jetbrains.kotlin:kotlin-reflect")
 	optional("org.jetbrains.kotlin:kotlin-stdlib")
 
+//	testImplementation(project(":spring-boot-project"))
 	testImplementation(project(":spring-boot-project:spring-boot-tools:spring-boot-test-support"))
 	testImplementation("com.google.appengine:appengine-api-1.0-sdk") {
 		exclude group: "javax.inject", module: "javax.inject"

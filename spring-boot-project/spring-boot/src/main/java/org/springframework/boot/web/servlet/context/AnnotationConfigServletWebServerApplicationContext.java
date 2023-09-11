@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -59,6 +61,7 @@ import org.springframework.util.ClassUtils;
 public class AnnotationConfigServletWebServerApplicationContext extends ServletWebServerApplicationContext
 		implements AnnotationConfigRegistry {
 
+	private static final Logger sl4jLogger = LoggerFactory.getLogger(AnnotationConfigServletWebServerApplicationContext.class);
 	private final AnnotatedBeanDefinitionReader reader;
 
 	private final ClassPathBeanDefinitionScanner scanner;
@@ -189,6 +192,7 @@ public class AnnotationConfigServletWebServerApplicationContext extends ServletW
 	@Override
 	public final void scan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
+		sl4jLogger.info("hgbLog : basePackages to scan are {}", basePackages.toString());
 		this.basePackages = basePackages;
 	}
 

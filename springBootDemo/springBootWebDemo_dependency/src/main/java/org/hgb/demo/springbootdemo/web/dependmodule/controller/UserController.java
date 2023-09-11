@@ -1,4 +1,4 @@
-package org.hgb.demo.springbootdemo.web.controller;
+package org.hgb.demo.springbootdemo.web.dependmodule.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;

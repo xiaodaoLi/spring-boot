@@ -1,0 +1,21 @@
+plugins {
+    id "java"
+    id "java-library"
+    id "org.springframework.boot.conventions"
+}
+
+description = "Spring Boot Actuator Log4j 2 smoke test"
+
+configurations.all {
+    exclude module: "spring-boot-starter-logging"
+}
+
+dependencies {
+
+    api(project(":spring-boot-project:spring-boot-starters:spring-boot-starter-actuator"))
+    api(project(":spring-boot-project:spring-boot-starters:spring-boot-starter-log4j2"))
+    api(project(":spring-boot-project:spring-boot-starters:spring-boot-starter-security"))
+    api(project(":spring-boot-project:spring-boot-starters:spring-boot-starter-web"))
+
+    testImplementation(project(":spring-boot-project:spring-boot-starters:spring-boot-starter-test"))
+}
